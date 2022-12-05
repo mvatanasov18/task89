@@ -12,7 +12,7 @@ export default class Application extends EventEmitter {
 
     this.planets = [];
 
-    this._loading = document.body.querySelector('progress');
+    this._loading = document.body.querySelector('.progress');
 
     this._load().then(() => this.emit(Application.events.READY));
   }
