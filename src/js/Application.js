@@ -10,6 +10,8 @@ export default class Application extends EventEmitter {
 
   constructor() {
     super();
+
+    let url = "https://swapi.boom.dev/api/planets";
     let _loading = document.body.querySelector('.progress');
 
     let _create = (n, t, p) => {
@@ -24,7 +26,7 @@ export default class Application extends EventEmitter {
     }
 
     let _load = async function() {
-        await fetch("https://swapi.boom.dev/api/planets").then((response) => {
+        await fetch(url).then((response) => {
             if (response.status !== 200) {
                 console.log('error ocured - ${response.status}');
                 return;
@@ -53,47 +55,32 @@ export default class Application extends EventEmitter {
         _loading.style.visibility = "hidden";
     }
 
-    function _startLoading() {
+    let _startLoading = function() {
         setTimeout(function() { _load().then(() => _stopLoading()); }, 1000);
     }
 
-
-    const box = document.createElement("div");
-    box.classList.add("box");
-    box.innerHTML = this._render({
-      name: "Placeholder",
-      terrain: "placeholder",
-      population: 0,
-    });
-
-    document.body.querySelector(".main").appendChild(box);
-
     this.emit(Application.events.READY);
+
     _startLoading();
-  }
+}
 
-
-
-
-
-  _render({ name, terrain, population }) {
+_render = ({ name, terrain, population }) => {
     return `
-<article class="media">
-  <div class="media-left">
-    <figure class="image is-64x64">
-      <img src="${image}" alt="planet">
-    </figure>
-  </div>
-  <div class="media-content">
-    <div class="content">
-    <h4>${name}</h4>
-      <p>
-        <span class="tag">${terrain}</span> <span class="tag">${population}</span>
-        <br>
-      </p>
-    </div>
-  </div>
-</article>
-    `;
-  }
+          <article class="media">
+            <div class="media-left">
+            <figure class="image is-64x64">
+              <img src="${image}" alt="planet">
+            </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <h4>${name}</h4>
+                <p>
+                <span class="tag">${terrain}</span> <span class="tag">${population}</span>
+                <br>
+                </p>
+              </div>
+            </div>
+          </article>`;
+}
 }
