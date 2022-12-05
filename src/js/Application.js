@@ -13,6 +13,7 @@ export default class Application extends EventEmitter {
 
     let url = "https://swapi.boom.dev/api/planets";
     let _loading = document.body.querySelector('.progress');
+    //get url
 
     let _create = (n, t, p) => {
         const box = document.createElement("div");
