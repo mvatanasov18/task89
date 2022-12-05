@@ -10,6 +10,53 @@ export default class Application extends EventEmitter {
 
   constructor() {
     super();
+    let _loading = document.body.querySelector('.progress');
+
+    let _create = (n, t, p) => {
+        const box = document.createElement("div");
+        box.classList.add("box");
+        box.innerHTML = this._render({
+            name: n,
+            terrain: t,
+            population: p
+        });
+        document.body.querySelector(".main").appendChild(box);
+    }
+
+    let _load = async function() {
+        await fetch("https://swapi.boom.dev/api/planets").then((response) => {
+            if (response.status !== 200) {
+                console.log('error ocured - ${response.status}');
+                return;
+            }
+
+            response.json().then((data) => {
+                let resultLeghth = Object.keys(data.results).length;
+                let planets = [];
+                for (let index = 0; index < resultLeghth; index++) {
+                    let planet = {
+                        'name': data.results[index].name,
+                        'terrain': data.results[index].terrain,
+                        'population': data.results[index].population
+                    }
+                    planets.push(planet);
+                }
+                console.log(planets);
+                planets.forEach(planet => {
+                    _create(planet.name, planet.terrain, planet.population);
+                });
+            });
+        });
+    }
+
+    let _stopLoading = () => {
+        _loading.style.visibility = "hidden";
+    }
+
+    function _startLoading() {
+        setTimeout(function() { _load().then(() => _stopLoading()); }, 1000);
+    }
+
 
     const box = document.createElement("div");
     box.classList.add("box");
@@ -22,7 +69,12 @@ export default class Application extends EventEmitter {
     document.body.querySelector(".main").appendChild(box);
 
     this.emit(Application.events.READY);
+    _startLoading();
   }
+
+
+
+
 
   _render({ name, terrain, population }) {
     return `
